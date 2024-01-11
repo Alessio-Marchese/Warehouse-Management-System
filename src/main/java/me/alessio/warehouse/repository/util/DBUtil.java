@@ -1,9 +1,9 @@
 package me.alessio.warehouse.repository.util;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class DBUtil {
 
@@ -20,10 +20,10 @@ public class DBUtil {
 		}
 	}
 
-	public static void close(Statement statement) {
-		if (statement != null) {
+	public static void close(PreparedStatement preparedStatement) {
+		if (preparedStatement != null) {
 			try {
-				statement.close();
+				preparedStatement.close();
 			} catch (SQLException e) {
 				System.err.println(e.getMessage());
 			}

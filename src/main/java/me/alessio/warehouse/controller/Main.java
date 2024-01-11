@@ -1,20 +1,24 @@
 package me.alessio.warehouse.controller;
 
-import java.util.List;
 
-import me.alessio.warehouse.model.Test;
-import me.alessio.warehouse.repository.TestRepository;
-import me.alessio.warehouse.repository.impl.TestRepositoryImpl;
+import java.sql.SQLException;
+import java.util.Map;
+
+import me.alessio.warehouse.repository.Database;
+import me.alessio.warehouse.repository.impl.DatabaseImpl;
 
 //That's a test to see if i can access the data from db
 
 public class Main {
 
 	public static void main(String[] args) {
-		TestRepository testRepo = new TestRepositoryImpl();
-		List<Test> tests = testRepo.findAll();
-		for(Test test : tests) {
-			System.out.println(test.getId());
+		Database db = DatabaseImpl.getInstance();
+		try {
+			Map<String, String> row = db.row("select * from test where id = (?)",new String[] {"4"});
+			System.out.println(row.get("id"));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
