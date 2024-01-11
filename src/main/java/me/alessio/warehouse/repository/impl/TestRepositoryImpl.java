@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.alessio.warehouse.model.Test;
-import me.alessio.warehouse.repository.DBUtil;
-import me.alessio.warehouse.repository.DataSource;
 import me.alessio.warehouse.repository.TestRepository;
+import me.alessio.warehouse.repository.util.DBUtil;
+import me.alessio.warehouse.repository.util.DataSource;
 
 //That's a test to see if i can access the data from db
 

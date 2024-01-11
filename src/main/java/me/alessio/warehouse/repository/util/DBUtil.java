@@ -1,4 +1,4 @@
-package me.alessio.warehouse.repository;
+package me.alessio.warehouse.repository.util;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

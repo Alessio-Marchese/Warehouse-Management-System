@@ -1,4 +1,4 @@
-package me.alessio.warehouse.repository;
+package me.alessio.warehouse.repository.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;
