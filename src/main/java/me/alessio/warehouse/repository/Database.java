@@ -8,10 +8,10 @@ public interface Database {
 	
 	List<Map <String,String>> rows (String sql) throws SQLException;
 	
-	List<Map<String, String>> rows(String sql,String[] parameters) throws SQLException;
+	List<Map<String, String>> rows(String sql,List<String> parameters) throws SQLException;
 
-	boolean execute (String sql, String[] parameters) throws SQLException;
+	boolean execute (String sql, List<String> parameters) throws SQLException;
 	
-	Map <String,String> row (String sql, String[] parameters) throws SQLException;
+	Map <String,String> row (String sql, List<String> parameters) throws SQLException;
 	
 }

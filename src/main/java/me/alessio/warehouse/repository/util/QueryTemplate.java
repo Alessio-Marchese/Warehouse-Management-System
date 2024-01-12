@@ -38,16 +38,16 @@ public class QueryTemplate implements Database {
 			 }
 	 */
 	@Override
-	public List<Map<String, String>> rows(String sql, String[] parameters) throws SQLException {
+	public List<Map<String, String>> rows(String sql, List<String> parameters) throws SQLException {
 		//Initialize a list of map String(column(key),value) wich is going to be the result of this method
 		List<Map<String, String>> res = new ArrayList<Map<String, String>>();
 		//get the connection from DataSource and get ps from the connection 
 		Connection connection = ds.getConnection();
 		PreparedStatement ps = connection.prepareStatement(sql);
 		//After the sql query is prepared inside the ps we need to add parameters to it
-		for (int i = 0; i < parameters.length; i++)
+		for (int i = 0; i < parameters.size(); i++)
 			//for how many parameters we have we set the string parameter of the i+1 index(becouse parameters set starts from 1)
-			ps.setString(i + 1, parameters[i]);
+			ps.setString(i + 1, parameters.get(i));
 		//at the end we can executeQuery(); if we give to the method more or less parameters than the ones that we declare
 		//inside the sql(query) we will get an error index out of bound
 		ResultSet rs = ps.executeQuery();
@@ -79,11 +79,11 @@ public class QueryTemplate implements Database {
 	 */
 	
 	@Override
-	public boolean execute(String sql,String[] parameters) throws SQLException {
+	public boolean execute(String sql,List<String> parameters) throws SQLException {
 		Connection connection = ds.getConnection();
 		PreparedStatement ps = connection.prepareStatement(sql);
-		for(int i=0;i<parameters.length;i++)
-			ps.setString(i+1,parameters[i]);
+		for(int i=0;i<parameters.size();i++)
+			ps.setString(i+1,parameters.get(i));
 		int check = ps.executeUpdate();
 		DBUtil.close(ps);
 		DBUtil.close(connection);
@@ -120,7 +120,7 @@ public class QueryTemplate implements Database {
 
 	//I wanted to add this method so that the developer could use a more intuitive method when he just need a single row
 	@Override
-	public Map<String, String> row(String sql, String[] parameters) throws SQLException {
+	public Map<String, String> row(String sql, List<String> parameters) throws SQLException {
 		List<Map<String, String>> rows = rows(sql,parameters);
 		return rows.size() == 1 ? rows.get(0) : null;
 	}
