@@ -1,4 +1,4 @@
-package me.alessio.warehouse.repository.impl;
+package me.alessio.warehouse.repository.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import me.alessio.warehouse.repository.Database;
-import me.alessio.warehouse.repository.util.DBUtil;
-import me.alessio.warehouse.repository.util.DataSource;
 
 /*	This Singleton class wants to be a Facade pattern to simplify the creation of queries my idea is that
  *  i will use this template inside the entity repositories so i can develop the project much faster
@@ -19,17 +17,17 @@ import me.alessio.warehouse.repository.util.DataSource;
  *  thanks to Prof. Ferdinando Primerano and Stefano Rubinetti who provided the base of this code inside their book
  */
 
-public class DatabaseImpl implements Database {
+public class QueryTemplate implements Database {
 	
-	private static DatabaseImpl instance = new DatabaseImpl();
+	private static QueryTemplate instance = new QueryTemplate();
 
 	DataSource ds = DataSource.getInstance();
 	
-	public static DatabaseImpl getInstance() {
+	public static QueryTemplate getInstance() {
 		return instance;
 	}
 	
-	private DatabaseImpl() {
+	protected QueryTemplate() {
 		
 	}
 	
@@ -64,8 +62,8 @@ public class DatabaseImpl implements Database {
 				//and then we add to the list of Map this single temporary Map
 				//basically we translate the key : value of the sql table (Column : Value) into a Map
 				row.put(rs.getMetaData().getColumnLabel(i + 1).toLowerCase(), rs.getString(i + 1));
-				res.add(row);
 			}
+			res.add(row);
 		}
 		DBUtil.close(rs);
 		DBUtil.close(ps);
@@ -111,8 +109,8 @@ public class DatabaseImpl implements Database {
 			Map<String, String> row = new LinkedHashMap<String, String>();
 			for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
 				row.put(rs.getMetaData().getColumnLabel(i + 1).toLowerCase(), rs.getString(i + 1));
-				res.add(row);
 			}
+			res.add(row);
 		}
 		DBUtil.close(rs);
 		DBUtil.close(ps);
