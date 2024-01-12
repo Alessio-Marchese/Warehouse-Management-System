@@ -69,7 +69,10 @@ public abstract class CrudRepo<T,ID> {
 		try {
 			result = qt.execute(sql, parameters);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
+			if(e.getMessage().endsWith("'user.email'")) {
+				System.out.println("Email already used, try with another");
+			}
 		}
 		return result;
 	}
