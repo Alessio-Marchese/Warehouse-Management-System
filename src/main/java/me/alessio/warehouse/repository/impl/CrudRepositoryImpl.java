@@ -1,4 +1,4 @@
-package me.alessio.warehouse.repository.util;
+package me.alessio.warehouse.repository.impl;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class CrudRepo<T,ID> {
+import me.alessio.warehouse.repository.CrudRepository;
+import me.alessio.warehouse.repository.util.QueryTemplate;
+
+public abstract class CrudRepositoryImpl<T,ID> implements CrudRepository<T,ID>{
 
 	QueryTemplate qt = QueryTemplate.getInstance();
 	
@@ -16,10 +19,11 @@ public abstract class CrudRepo<T,ID> {
 	
 	protected Class<T> clazz;
 
-	public CrudRepo(Class<T> clazz) {
+	public CrudRepositoryImpl(Class<T> clazz) {
 		this.clazz = clazz;
 	}
 	
+	@Override
 	public Map<String,String> findById(ID id) {
 		Map<String,String> row = null;
 		String sql = "SELECT * FROM "+ clazz.getSimpleName().toLowerCase()+" WHERE id = (?)";
@@ -33,6 +37,7 @@ public abstract class CrudRepo<T,ID> {
 		return row;
 	}
 	
+	@Override
 	public List<Map<String,String>> findAll() {
 		List<Map<String,String>> rows = null;
 		String sql = "SELECT * FROM "+ clazz.getSimpleName().toLowerCase();
@@ -44,29 +49,33 @@ public abstract class CrudRepo<T,ID> {
 		return rows;
 	}
 	
-	public boolean insert(List<String> parameters) {
-		boolean result = false;
-		Field[] fields = clazz.getDeclaredFields();
-		List<String> translatedFields = new ArrayList<String>();
-		for(int i = 0; i < fields.length; i++) {
-			if(fields[i].getName().equals("id")) {
-				continue;
+	@Override
+	public boolean insert(T entity) {
+		Field[] classFields = clazz.getDeclaredFields();
+		List<Field> entityFields = Arrays.stream(classFields).peek(field -> field.setAccessible(true)).collect(Collectors.toList());
+		List<String> values = new ArrayList<String>();
+		//This starts from 1 because it want to skip the ID since it will be auto_increment in MySQL
+		for(int i = 1; i < entityFields.size(); i++) {
+			try {
+				values.add(entityFields.get(i).get(entity).toString());
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
 			}
-			if (i != fields.length-1) {
-				translatedFields.add(fields[i].getName()+",");
-			} else {
-				translatedFields.add(fields[i].getName());
-			}
-			
 		}
 		
 		sqlBuilder.append("INSERT INTO " + clazz.getSimpleName().toLowerCase() + "(");
-		for(String att : translatedFields) {
-			sqlBuilder.append(att);
+		//Starts from 1 becouse it want to skit the ID
+		for(int i = 1; i < classFields.length; i++) {
+			sqlBuilder.append(classFields[i].getName());
+			if(i != classFields.length-1) {
+				sqlBuilder.append(",");
+			}
 		}
 		sqlBuilder.append(") VALUES ("); 
-		for(int i = 0; i < parameters.size(); i++) {
-			if(i != parameters.size()-1) {
+		for(int i = 0; i < values.size(); i++) {
+			if(i != values.size()-1) {
 				sqlBuilder.append("?,");
 			} else {
 				sqlBuilder.append("?)");
@@ -74,16 +83,14 @@ public abstract class CrudRepo<T,ID> {
 		}
 		
 		try {
-			result = qt.execute(sqlBuilder.toString(), parameters);
+			return qt.execute(sqlBuilder.toString(), values);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			if(e.getMessage().endsWith("'user.email'")) {
-				System.out.println("Email already used, try with another");
-			}
+			e.printStackTrace();
 		}
-		return result;
+		return false;
 	}
 	
+	@Override
 	public boolean update(T entity) {
 		Field[] classFields = clazz.getDeclaredFields();
 		List<Field> entityFields = Arrays.stream(classFields).peek(field -> field.setAccessible(true)).collect(Collectors.toList());
@@ -125,6 +132,7 @@ public abstract class CrudRepo<T,ID> {
 		return false;
 	}
 	
+	@Override
 	public boolean delete(T entity) {
 		Field[] classFields = clazz.getDeclaredFields();
 		List<Field> entityFields = Arrays.stream(classFields).peek(field -> field.setAccessible(true)).collect(Collectors.toList());

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import me.alessio.warehouse.model.User;
+import me.alessio.warehouse.repository.UserRepository;
 import me.alessio.warehouse.repository.impl.UserRepositoryImpl;
 
 //That's a test to see if i can access the data from db
@@ -12,7 +13,7 @@ import me.alessio.warehouse.repository.impl.UserRepositoryImpl;
 public class Main {
 
 	public static void main(String[] args) {
-	UserRepositoryImpl userRepo = UserRepositoryImpl.getInstance();
+	UserRepository userRepo = UserRepositoryImpl.getInstance();
 		
 	//FINDALL TEST
 	List<Map<String, String>> users = userRepo.findAll();
@@ -33,12 +34,14 @@ public class Main {
 		System.out.println(userRepo.findAll());
 		
 		System.out.println(userRepo.findById(1));
-		List<String> parameters = new ArrayList<String>();
-		parameters.add("email10");
-		parameters.add("username10");
-		parameters.add("password10");
+		User user = new User();
+		//for now since the id is ignored inside the method the actual id that will be added is the one from
+		user.setId(51);
+		user.setEmail("email501");
+		user.setUsername("username501");
+		user.setPassword("password501");
 		
-		if(userRepo.insert(parameters)) {
+		if(userRepo.insert(user)) {
 			System.out.println("added");
 		} else {
 			System.out.println("not added");
@@ -46,13 +49,13 @@ public class Main {
 
 		
 	//UPDATE TEST	
-	User user = new User();
-	user.setId(2);
-	user.setEmail("emai19");
-	user.setUsername("username19");
-	user.setPassword("password19");
+	User user3 = new User();
+	user3.setId(4);
+	user3.setEmail("20");
+	user3.setUsername("20");
+	user3.setPassword("20");
 	
-		if(userRepo.update(user)) {
+		if(userRepo.update(user3)) {
 			System.out.println("updated");
 		} else {
 			System.out.println("not updated");

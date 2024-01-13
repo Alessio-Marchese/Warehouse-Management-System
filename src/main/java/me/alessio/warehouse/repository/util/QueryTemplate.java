@@ -9,15 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.alessio.warehouse.repository.Database;
-
 /*	This Singleton class wants to be a Facade pattern to simplify the creation of queries my idea is that
  *  i will use this template inside the entity repositories so i can develop the project much faster
  *  i have only described the first method since the other ones are similar to it
  *  thanks to Prof. Ferdinando Primerano and Stefano Rubinetti who provided the base of this code inside their book
  */
 
-public class QueryTemplate implements Database {
+public class QueryTemplate {
 	
 	private static QueryTemplate instance = new QueryTemplate();
 
@@ -37,7 +35,7 @@ public class QueryTemplate implements Database {
 				 System.out.println(row.get("id"));
 			 }
 	 */
-	@Override
+	
 	public List<Map<String, String>> rows(String sql, List<String> parameters) throws SQLException {
 		//Initialize a list of map String(column(key),value) wich is going to be the result of this method
 		List<Map<String, String>> res = new ArrayList<Map<String, String>>();
@@ -78,7 +76,7 @@ public class QueryTemplate implements Database {
 	 *  It return a boolean so we can check on that to print the success execution of the method or the failure
 	 */
 	
-	@Override
+	
 	public boolean execute(String sql,List<String> parameters) throws SQLException {
 		Connection connection = ds.getConnection();
 		PreparedStatement ps = connection.prepareStatement(sql);
@@ -99,7 +97,7 @@ public class QueryTemplate implements Database {
 				 System.out.println(row.get("id"));
 			 }
 	 */
-	@Override
+	
 	public List<Map<String, String>> rows(String sql) throws SQLException {
 		List<Map<String, String>> res = new ArrayList<Map<String, String>>();
 		Connection connection = ds.getConnection();
@@ -119,7 +117,7 @@ public class QueryTemplate implements Database {
 	}
 
 	//I wanted to add this method so that the developer could use a more intuitive method when he just need a single row
-	@Override
+	
 	public Map<String, String> row(String sql, List<String> parameters) throws SQLException {
 		List<Map<String, String>> rows = rows(sql,parameters);
 		return rows.size() == 1 ? rows.get(0) : null;
